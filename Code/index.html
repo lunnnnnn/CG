@@ -1,0 +1,174 @@
+<!-- adapted from https://threejs.org/examples/webgl_loader_stl and https://sbcode.net/threejs/loaders-stl/ -->
+
+<!--
+a. copy and save all of this, into your own .html, eg. fun.html
+b. create an img/ folder, place 6 cubemap photos (eg of your room!)
+c. edit fun.html, remove 'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/' 6 times [so you only have img/...]
+d. create models/your-model.stl
+e. edit fun.html, remove https://bytes.usc.edu/~saty/... in the loader.load() call, instead put in models/your-model.stl
+f. load fun.html into your browser - ta-da!!
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>STL loader</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="https://unpkg.com/three@0.146.0/build/three.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/three@0.146.0/examples/js/loaders/STLLoader.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/three@0.146.0/examples/js/controls/OrbitControls.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+
+
+    <script>
+        const scene = new THREE.Scene();
+        // scene.add(new THREE.AxesHelper(2)); // cmt this out if you like...
+
+        const light = new THREE.SpotLight();
+        light.position.set(0, 2, 5);
+        scene.add(light);
+
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.z = 1;
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableZoom = true;     // 允许缩放
+        controls.enableRotate = true;  // 禁止旋转
+        controls.enablePan = true;     // 平移
+        controls.enableKeys = false;    // 禁止键盘控制
+        controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN }; //设置鼠标按钮的功能
+
+        const envTexture = new THREE.CubeTextureLoader().load([
+            'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/img/px_50.png',
+            'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/img/nx_50.png',
+            'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/img/py_50.png',
+            'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/img/ny_50.png',
+            'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/img/pz_50.png',
+            'https://bytes.usc.edu/~saty/tools/xem/x/THREE-STLLoader/img/nz_50.png'
+        ]);
+        envTexture.mapping = THREE.CubeReflectionMapping;
+
+        let material;
+
+        material = new THREE.MeshPhysicalMaterial({
+            color: 0xff0000,
+            // 开启贴图
+            envMap: envTexture,
+            metalness: 0.1,
+            roughness: 0.5,
+            opacity: 0.8, // 增加一些透明度
+            transparent: true,
+            transmission: 0.9, // 增加透射率，使其看起来更像纸或丝
+            clearcoat: 0.2,
+            clearcoatRoughness: 0.25
+        });
+        const innerLight = new THREE.PointLight(0xffd700, 10, 100); // 黄色光源
+        innerLight.position.set(0, 0, 1); // 设置光源在模型的中心
+        scene.add(innerLight);
+        const ambient = new THREE.AmbientLight(0x404040);  // 通常设置为柔和的灰色
+        scene.add(ambient);
+        let mesh, mesh2, mesh3;
+        const loader = new THREE.STLLoader();
+        loader.load('./1.stl',
+            function (geometry) {
+                mesh = new THREE.Mesh(geometry, material)
+                // 这里设置模型的缩放
+                mesh.scale.set(0.1, 0.1, 0.1);
+                mesh.position.set(0, 0, 1);
+                scene.add(mesh)
+                // 调整摄像机的位置
+                camera.position.x = -0.35;
+                camera.position.y = -67;
+                camera.position.z = 25;
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+            },
+            (error) => {
+                console.log(error)
+            }
+        );
+        loader.load('./2.stl',
+            function (geometry) {
+                mesh2 = new THREE.Mesh(geometry, material)
+                // 这里设置模型的缩放
+                mesh2.scale.set(0.1, 0.1, 0.1);
+                mesh2.position.set(0, 0, 1);
+                scene.add(mesh2)
+                // 调整摄像机的位置
+                camera.position.x = -0.35;
+                camera.position.y = -67;
+                camera.position.z = 25;
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+            },
+            (error) => {
+                console.log(error)
+            }
+        );
+        loader.load('./3.stl',
+            function (geometry) {
+                mesh3 = new THREE.Mesh(geometry, material)
+                // 这里设置模型的缩放
+                mesh3.scale.set(0.1, 0.1, 0.1);
+                mesh3.position.set(0, 0, 1);
+                scene.add(mesh3)
+                // 调整摄像机的位置
+                camera.position.x = -0.35;
+                camera.position.y = -67;
+                camera.position.z = 25;
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+            },
+            (error) => {
+                console.log(error)
+            }
+        );
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight
+            camera.updateProjectionMatrix()
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            render()
+        };
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            render();
+        }
+
+        function render() {
+            const timer = Date.now() * 0.0005;
+            mesh.rotation.z += 0.01;
+            mesh2.rotation.z += 0.01;
+            mesh3.rotation.z += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+    </script>
+</body>
+
+</html>
