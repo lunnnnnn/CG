@@ -1,0 +1,10 @@
+/* Apply white color to all text elements */
+body, p, h1, h2, h3, h4, h5, h6, a, span, div {
+    color: rgb(255, 250, 255) ;
+}
+
+/* Set black background for the entire page */
+body {
+    background-color: rgb(0, 0, 0);
+    font-family: "Times New Roman", Times, serif;
+}
